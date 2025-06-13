@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Your Anonymous Message</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+        font-family: 'Georgia', serif;
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #f7f4f1;
+        color: #1a1a1a;
+      }
+      .message-box {
+        padding: 2rem;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        font-size: 1.25rem;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>You've Received an Anonymous Message</h1>
+    <div class="message-box" id="messageBox">Loading message...</div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("response_id");
+
+     fetch(`https://hooks.zapier.com/hooks/catch/22965753/uyl64os/?response_id=${id}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("messageBox").innerText = data.message || "No message found.";
+        })
+        .catch(() => {
+          document.getElementById("messageBox").innerText = "There was an error retrieving your message.";
+        });
+    </script>
+  </body>
+</html>
