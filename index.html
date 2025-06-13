@@ -1,62 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Anonymous Message</title>
-  <style>
-    body {
-      font-family: 'Georgia', serif;
-      background-color: #f9f6f3;
-      padding: 40px;
-      text-align: center;
-    }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    #message-content {
-      background-color: #fff;
-      border: 1px solid #ccc;
-      padding: 20px;
-      max-width: 500px;
-      margin: 0 auto;
-      border-radius: 8px;
-      font-size: 18px;
-    }
-  </style>
-</head>
-<<!-- test save -->body>
-  <h1>You've Received an Anonymous Message</h1>
-  <div id="message-content">Loading message...</div>
+<script>
+  async function loadMessage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const responseId = urlParams.get("response_id");
 
-  <script>
-    async function loadMessage() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const responseId = urlParams.get("response_id");
+    if (!responseId) {
+      document.getElementById("message-content").innerText = "No message ID found.";
+      return;
+    }
 
-      if (!responseId) {
-        document.getElementById("message-content").innerText = "No message ID found.";
-        return;
+    try {
+      `https://hooks.zapier.com/storage/services/get-secret/YOUR_STORAGE_SECRET_KEY/response_id/${responseId}`
+      const data = await res.json();
+
+      if (data && data.message) {
+        document.getElementById("message-content").innerText = data.message;
+      } else {
+        document.getElementById("message-content").innerText = "No message found.";
       }
-
-      try {
-        const webhookURL = "https://hooks.zapier.com/hooks/catch/22965753/uyl64os";
-        const res = await fetch(`${webhookURL}?response_id=${responseId}`);
-        const data = await res.json();
-
-        if (data.message) {
-          document.getElementById("message-content").innerText = data.message;
-        } else {
-          document.getElementById("message-content").innerText = "No message found.";
-        }
-      } catch (error) {
-        document.getElementById("message-content").innerText = "Error loading message.";
-        console.error("Error fetching message:", error);
-      }
+    } catch (error) {
+      document.getElementById("message-content").innerText = "Error loading message.";
+      console.error("Error:", error);
     }
+  }
 
-    loadMessage();
-  </script>
-</body>
-</html>
+  loadMessage();
+</script>
