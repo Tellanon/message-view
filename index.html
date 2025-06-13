@@ -52,8 +52,7 @@
 
         try {
           const res = await fetch(
-            `https://hooks.zapier.com/storage/services/get-secret/4cb5f4c2-1066-4d64-b1c9-eafcbbb5e464/response_id/${responseId}`
-          );
+            `https://hooks.zapier.com/storage/services/get-secret/4cb5f4c2-1066-4d64-b1c9-eafcbbb5e464/response_id/${responseId}`);
           const data = await res.json();
 
           if (data && data.message) {
