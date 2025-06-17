@@ -1,10 +1,11 @@
-exports.handler = async (event) => {
-  const recordId = event.queryStringParameters.response_id;
+const fetch = require('node-fetch');
 
+exports.handler = async function(event) {
+  const recordId = event.queryStringParameters.response_id;
   if (!recordId) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Missing response_id." }),
+      body: JSON.stringify({ error: "Missing response_id" }),
     };
   }
 
@@ -12,28 +13,21 @@ exports.handler = async (event) => {
   const baseId = "appn6Nd3NlUTEDi8w";
   const tableName = "Anonymous Messages";
 
-  const url = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(tableName)}/${recordId}`;
-
   try {
-    const response = await fetch(url, {
+    const response = await fetch(`https://api.airtable.com/v0/${baseId}/${encodeURIComponent(tableName)}/${recordId}`, {
       headers: {
         Authorization: `Bearer ${apiKey}`,
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`Airtable fetch error: ${response.status}`);
-    }
-
     const data = await response.json();
-    const message = data.fields?.Message || null;
+    const message = data.fields?.Message || "Message not found.";
 
     return {
       statusCode: 200,
       body: JSON.stringify({ message }),
     };
   } catch (error) {
-    console.error("Fetch error:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "There was an error retrieving your message." }),
